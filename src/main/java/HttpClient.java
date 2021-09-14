@@ -37,7 +37,7 @@ public class HttpClient {
         while ((c = socket.getInputStream().read()) != '\r') {
           result.append((char) c);
         }
-
+        socket.getInputStream().read();
         return result.toString();
     }
 
