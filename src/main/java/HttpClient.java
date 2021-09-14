@@ -1,9 +1,40 @@
+import java.io.IOException;
+import java.net.Socket;
+
 public class HttpClient {
 
-    public HttpClient(String host, int port, String requestTarget) {
+    private final int statuscode;
+
+    public HttpClient(String host, int port, String requestTarget) throws IOException {
+        Socket socket = new Socket(host, port);
+
+        String request = "GET " + requestTarget + " HTTP/1.1\r\n" +
+                "Host:" + host + "\r\n" +
+                "Connection: close\r\n" +
+                "\r\n";
+
+        socket.getOutputStream().write(request.getBytes());
+
+        String[]statusLine = readLine(socket).split(" ");
+        this.statuscode = Integer.parseInt(statusLine[1]);
+
+    }
+
+    private String readLine(Socket socket) throws IOException {
+        StringBuilder result = new StringBuilder();
+        int c;
+        while ((c = socket.getInputStream().read()) != '\r') {
+          result.append((char) c);
+        }
+
+        return result.toString();
     }
 
     public int getStatusCode() {
-        return 200;
+        return statuscode;
+    }
+
+    public String getHeader(String headerName) {
+        return null;
     }
 }
